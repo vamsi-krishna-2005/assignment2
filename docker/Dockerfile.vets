@@ -4,7 +4,7 @@ WORKDIR /app
 ARG ARTIFACT_NAME=spring-petclinic-vets-service-3.4.1
 ARG EXPOSED_PORT=3007
 
-COPY ../${ARTIFACT_NAME}/target/${ARTIFACT_NAME}-3.4.1.jar application.jar
+COPY ../${ARTIFACT_NAME}/target/${ARTIFACT_NAME} application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM eclipse-temurin:17
