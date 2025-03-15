@@ -1,5 +1,5 @@
 FROM eclipse-temurin:17 AS builder
-WORKDIR application
+WORKDIR /app
 
 ARG ARTIFACT_NAME=spring-petclinic-api-gateway-3.4.1
 ARG EXPOSED_PORT=3003
@@ -8,7 +8,7 @@ COPY ${ARTIFACT_NAME}.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM eclipse-temurin:17
-WORKDIR application
+WORKDIR /app
 EXPOSE ${EXPOSED_PORT}
 ENV SPRING_PROFILES_ACTIVE=docker
 
