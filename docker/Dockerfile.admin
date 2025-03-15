@@ -1,0 +1,30 @@
+# docker/Dockerfile.admin
+FROM eclipse-temurin:17 AS builder
+WORKDIR application
+
+# Build-time arguments
+ARG ARTIFACT_NAME=spring-petclinic-admin-server-3.4.1
+ARG EXPOSED_PORT=3001
+
+COPY ${ARTIFACT_NAME}.jar application.jar
+RUN java -Djarmode=layertools -jar application.jar extract
+
+FROM eclipse-temurin:17
+WORKDIR application
+
+# Expose the port you want to use
+EXPOSE ${EXPOSED_PORT}
+
+ENV SPRING_PROFILES_ACTIVE=docker
+
+# Copy layers from the builder stage
+COPY --from=builder application/dependencies/ ./
+RUN true
+COPY --from=builder application/spring-boot-loader/ ./
+RUN true
+COPY --from=builder application/snapshot-dependencies/ ./
+RUN true
+COPY --from=builder application/application/ ./
+
+# You can pass --server.port=3001 at runtime or set it here
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
